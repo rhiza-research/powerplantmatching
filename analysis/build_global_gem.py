@@ -79,4 +79,4 @@ def aggregate_by_location(units):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1] if len(sys.argv) > 1 else "global_gem_output")
+    main(sys.argv[1] if len(sys.argv) > 1 else "outputs/gem_global")

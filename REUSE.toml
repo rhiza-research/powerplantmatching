@@ -40,3 +40,10 @@ path = [
 ]
 SPDX-FileCopyrightText = "Lars Marius Garshol <larsga@garshol.priv.no>"
 SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = [
+    "outputs/gem_global/**",
+]
+SPDX-FileCopyrightText = "Global Energy Monitor <https://globalenergymonitor.org>, Contributors to powerplantmatching <https://github.com/pypsa/powerplantmatching>"
+SPDX-License-Identifier = "CC-BY-4.0"
