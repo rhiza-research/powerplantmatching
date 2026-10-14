@@ -53,6 +53,9 @@ def main(out_dir):
         .rename(columns={"GEM location ID": "locationID"})
         .powerplant.to_pypsa_technology_data()
     )
+    names = units.Country.dropna().unique()
+    iso3 = coco.convert(list(names), to="ISO3", not_found=None)
+    units.insert(units.columns.get_loc("Country") + 1, "ISO3", units.Country.map(dict(zip(names, iso3))))
     units.to_csv(out_dir / "gem_global_units.csv", index=False)
 
     plants = aggregate_by_location(units)
@@ -62,7 +65,7 @@ def main(out_dir):
 
 def aggregate_by_location(units):
     """Sum units sharing a GEM location, technology, fuel and status."""
-    keys = ["locationID", "Country", "Fueltype", "Technology", "tech", "fuel", "Set", "Status"]
+    keys = ["locationID", "Country", "ISO3", "Fueltype", "Technology", "tech", "fuel", "Set", "Status"]
     return (
         units.groupby(keys, dropna=False)
         .agg(

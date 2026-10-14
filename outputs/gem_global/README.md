@@ -17,6 +17,7 @@ Columns follow powerplantmatching's standard columns, plus:
 
 - `Status` -- GEM status: operating, construction, retired, and for coal,
   geothermal and nuclear also mothballed.
+- `ISO3` -- ISO 3166-1 alpha-3 code for `Country` (via country_converter).
 - `locationID` -- GEM location ID (one per plant site).
 - `tech`, `fuel` -- names from PyPSA technology-data
   (https://github.com/PyPSA/technology-data), from `to_pypsa_technology_data`.
