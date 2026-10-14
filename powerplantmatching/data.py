@@ -2186,8 +2186,8 @@ def GGPT(raw=False, update=False, config=None):
             return "Natural Gas"
 
     technology_dict = {
-        "gas turbine": "Steam Turbine",
-        "internal combustion": "Steam Turbine",
+        "gas turbine": "OCGT",
+        "internal combustion": "Combustion Engine",
         "combined cycle": "CCGT",
         "ICCC": "CCGT",
         "ISCC": "CCGT",

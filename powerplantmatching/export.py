@@ -43,6 +43,71 @@ def to_pypsa_names(df):
     )
 
 
+# Default PyPSA technology-data technology and fuel per Fueltype, see
+# https://github.com/PyPSA/technology-data. Fuel is None for carriers without
+# a fuel cost.
+PYPSA_TECHNOLOGY_DATA_FUELTYPES = {
+    "Natural Gas": ("OCGT", "gas"),
+    "Hard Coal": ("coal", "coal"),
+    "Lignite": ("lignite", "lignite"),
+    "Oil": ("oil", "oil"),
+    "Nuclear": ("nuclear", "uranium"),
+    "Hydro": ("hydro", None),
+    "Solar": ("solar-utility", None),
+    "Wind": ("onwind", None),
+    "Solid Biomass": ("biomass", "solid biomass"),
+    "Biogas": ("biomass", "biogas"),
+    "Waste": ("waste CHP", None),
+    "Geothermal": ("geothermal", None),
+    "Battery": ("battery storage", None),
+}
+
+# (Fueltype, Technology) pairs whose technology-data name differs from the
+# Fueltype default above.
+PYPSA_TECHNOLOGY_DATA_TECHNOLOGIES = {
+    ("Natural Gas", "CCGT"): "CCGT",
+    ("Hydro", "Run-Of-River"): "ror",
+    ("Hydro", "Pumped Storage"): "PHS",
+    ("Solar", "CSP"): "csp-tower",
+    ("Wind", "Offshore"): "offwind",
+}
+
+
+def to_pypsa_technology_data(df):
+    """
+    Add 'tech' and 'fuel' columns named after PyPSA technology-data.
+
+    Technologies are set per Fueltype (e.g. all Natural Gas defaults to OCGT,
+    all Hard Coal to coal), with exceptions per (Fueltype, Technology) such as
+    Natural Gas CCGT or Hydro Run-Of-River. Fueltypes without an equivalent
+    (e.g. Other) get NaN.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        power plant list with 'Fueltype' and 'Technology' columns
+
+    Returns
+    -------
+    DataFrame with extra columns 'tech' and 'fuel'.
+    """
+    df = get_obj_if_Acc(df)
+    defaults = PYPSA_TECHNOLOGY_DATA_FUELTYPES
+    tech = df.Fueltype.map({k: v[0] for k, v in defaults.items()})
+    fuel = df.Fueltype.map({k: v[1] for k, v in defaults.items()})
+
+    pairs = pd.Series(list(zip(df.Fueltype, df.Technology)), index=df.index)
+    tech = pairs.map(PYPSA_TECHNOLOGY_DATA_TECHNOLOGIES).fillna(tech)
+
+    unmapped = df.Fueltype[tech.isna()].unique()
+    if len(unmapped):
+        logger.warning(
+            f"No PyPSA technology-data name for Fueltypes {list(unmapped)}; "
+            "'tech' is NaN for these plants."
+        )
+    return df.assign(tech=tech, fuel=fuel)
+
+
 def map_bus(df, buses):
     """
     Assign a 'bus' column to the dataframe based on a list of coordinates.

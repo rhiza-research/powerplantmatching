@@ -28,7 +28,12 @@ class PowerPlantAccessor:
         self._obj = pandas_obj
 
     from .cleaning import aggregate_units, clean_powerplantname
-    from .export import map_bus, map_country_bus, to_pypsa_names
+    from .export import (
+        map_bus,
+        map_country_bus,
+        to_pypsa_names,
+        to_pypsa_technology_data,
+    )
     from .heuristics import (
         extend_by_non_matched,
         extend_by_VRE,
